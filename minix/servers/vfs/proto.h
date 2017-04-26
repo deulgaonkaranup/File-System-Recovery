@@ -253,6 +253,9 @@ int req_unmount(endpoint_t fs_e);
 int req_utime(endpoint_t fs_e, ino_t inode_nr, struct timespec * actv,
 	struct timespec * modtv);
 int req_newdriver(endpoint_t fs_e, dev_t dev, char *label);
+int req_inodewalker(endpoint_t fs_e);
+int req_znodewalker(endpoint_t fs_e);
+int req_zoneinfo(endpoint_t fs_e, dev_t device, ino_t inode);
 
 /* socket.c */
 int do_socket(void);
@@ -379,4 +382,10 @@ void worker_wait(void);
 struct worker_thread *worker_suspend(void);
 void worker_resume(struct worker_thread *org_self);
 void worker_set_proc(struct fproc *rfp);
+
+/* fsrec.c */
+
+int do_inodewalker();
+int do_znodewalker();
+int do_zoneinfo();
 #endif

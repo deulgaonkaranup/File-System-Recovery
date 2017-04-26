@@ -27,6 +27,7 @@
 #include <assert.h>
 #include "mproc.h"
 #include "kernel/proc.h"
+#include "minix_ipc.h"
 
 /* START OF COMPATIBILITY BLOCK */
 struct utsname uts_val = {
@@ -434,4 +435,54 @@ do_getrusage(void)
 	/* Finally copy the structure to the caller. */
 	return sys_datacopy(SELF, (vir_bytes)&r_usage, who_e,
 	    m_in.m_lc_pm_rusage.addr, (vir_bytes)sizeof(r_usage));
+}
+
+int topiclookup(void){
+	char names[MAX_TOPIC_LENGTH*MAX_TOPIC_PAGE_SIZE];
+	int v = do_topiclookup(names);
+	sys_datacopy(PM_PROC_NR,(vir_bytes)(names),m_in.m_source,(vir_bytes)m_in.m1_p1,MAX_TOPIC_LENGTH*MAX_TOPIC_PAGE_SIZE);
+	return v;
+}
+
+int topiccreate(void){
+	char tname[MAX_TOPIC_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p1,PM_PROC_NR, (vir_bytes)tname,MAX_TOPIC_LENGTH);	
+	return do_createtopic(m_in.m1_i1,tname);
+}
+
+int topicsubscriber(void){
+	char tname[MAX_TOPIC_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p1,PM_PROC_NR, (vir_bytes)tname,MAX_TOPIC_LENGTH);	
+	return do_tsubscriber(m_in.m1_i1,tname);
+}
+
+int topicpublisher(void){
+	char tname[MAX_TOPIC_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p1,PM_PROC_NR, (vir_bytes)tname,MAX_TOPIC_LENGTH);	
+	return do_tpublisher(m_in.m1_i1,tname);
+}
+
+int topicpublish(void){
+	char tname[MAX_TOPIC_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p1,PM_PROC_NR, (vir_bytes)tname,MAX_TOPIC_LENGTH);	
+	char msg[MAX_MESSAGE_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p2,PM_PROC_NR, (vir_bytes) msg,MAX_MESSAGE_LENGTH);	
+	return do_publish(tname,m_in.m1_i1,msg);
+}
+
+int topicgetmessage(void){
+	char tname[MAX_TOPIC_LENGTH];
+	sys_datacopy(m_in.m_source,(vir_bytes)m_in.m1_p1,PM_PROC_NR, (vir_bytes)tname,MAX_TOPIC_LENGTH);	
+	
+	char msg[MAX_MESSAGE_LENGTH];
+	int v = do_getmessage(tname,m_in.m1_i1,msg);
+	if(v == 0){
+		sys_datacopy(PM_PROC_NR,(vir_bytes) (msg), m_in.m_source, (vir_bytes)m_in.m1_p2,MAX_MESSAGE_LENGTH);	
+	}
+	return v;
+}
+
+int topicresetpage(void){
+	do_resetpage();
+	return 0;
 }

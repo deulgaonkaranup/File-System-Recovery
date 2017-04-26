@@ -71,8 +71,11 @@ typedef struct {
 #define REQ_GETDENTS	(FS_BASE + 31)
 #define REQ_PEEK	(FS_BASE + 32)
 #define REQ_BPEEK	(FS_BASE + 33)
+#define REQ_INODEWALKER (FS_BASE + 34)
+#define REQ_ZNODEWALKER (FS_BASE + 35)
+#define REQ_ZONEINFO	(FS_BASE + 36)
 
-#define NREQS			    34
+#define NREQS			    37
 
 #define IS_FS_RQ(type) (((type) & ~0xff) == FS_BASE)
 

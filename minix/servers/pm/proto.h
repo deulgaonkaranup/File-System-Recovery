@@ -51,6 +51,13 @@ int do_getepinfo(void);
 int do_svrctl(void);
 int do_getsetpriority(void);
 int do_getrusage(void);
+int topiclookup(void);
+int topiccreate(void);
+int topicsubscriber(void);
+int topicpublisher(void);
+int topicpublish(void);
+int topicgetmessage(void);
+int topicresetpage(void);
 
 /* schedule.c */
 void sched_init(void);

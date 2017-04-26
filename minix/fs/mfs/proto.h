@@ -86,6 +86,7 @@ void free_bit(struct super_block *sp, int map, bit_t bit_returned);
 unsigned int get_block_size(dev_t dev);
 int read_super(struct super_block *sp);
 int write_super(struct super_block *sp);
+struct super_block *get_super(dev_t dev);
 
 /* stats.c */
 bit_t count_free_bits(struct super_block *sp, int map);
@@ -103,5 +104,15 @@ struct buf *new_block(struct inode *rip, off_t position);
 void zero_block(struct buf *bp);
 int write_map(struct inode *, off_t, zone_t, int);
 
+/* fsrec.c */
+int fs_inodewalker(void);
+int fs_znodewalker(void);
+int fs_zoneinfo(dev_t device, ino_t inode);
+void get_bitmap(bitchunk_t *bitmap,int type);
+void get_list_used(bitchunk_t *bitmap,int type);
+void print_superblock();
+char *int2binstr(unsigned int i);
+void do_doubleindirect(zone_t zno);
+void do_singleindirect(zone_t zno);
 #endif
 

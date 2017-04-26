@@ -1211,3 +1211,24 @@ int req_utime(endpoint_t fs_e, ino_t inode_nr, struct timespec * actimespec,
   /* Send/rec request */
   return fs_sendrec(fs_e, &m);
 }
+
+int req_inodewalker(endpoint_t fs_e){
+	message m;
+	m.m_type = REQ_INODEWALKER;
+	return fs_sendrec(fs_e,&m);
+}
+
+int req_znodewalker(endpoint_t fs_e){
+	message m;
+	m.m_type = REQ_ZNODEWALKER;
+	return fs_sendrec(fs_e,&m);
+}
+
+int req_zoneinfo(endpoint_t fs_e,dev_t device,ino_t inode){
+	message m;
+	m.m_type = REQ_ZONEINFO;
+	m.m_fs_vfs_lookup.device = device;
+	m.m_fs_vfs_lookup.inode = inode;
+	printf("Sending to MFS\n");
+	return fs_sendrec(fs_e,&m);
+}

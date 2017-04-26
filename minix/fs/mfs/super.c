@@ -235,6 +235,14 @@ static int rw_super(struct super_block *sp, int writing)
   return OK;
 }
 
+struct super_block *get_super(dev_t dev){
+	if(dev == NO_DEV)
+		panic("Super Block is Initial");
+	if(superblock.s_dev != dev)
+		panic("wrong superblock: 0x%x",(int)dev);
+	return (&superblock);
+}
+
 /*===========================================================================*
  *				read_super				     *
  *===========================================================================*/

@@ -1011,3 +1011,24 @@ fsdriver_flush(const struct fsdriver * __restrict fdp,
 
 	return OK;
 }
+
+int fsdriver_zoneinfo(const struct fsdriver * __restrict fdp,
+			const message * __restrict m_in, message * __restrict __unused m_out){
+
+	dev_t device = m_in->m_fs_vfs_lookup.device;
+	ino_t inode = m_in->m_fs_vfs_lookup.inode;
+	int r = fdp->fdr_zoneinfo(device,inode);
+	return r;
+}
+
+int fsdriver_inodewalker(const struct fsdriver * __restrict fdp,
+			const message * __restrict m_in, message * __restrict __unused m_out){
+	int r = fdp->fdr_inodewalker();
+	return r;
+}
+
+int fsdriver_znodewalker(const struct fsdriver * __restrict fdp,
+			const message * __restrict m_in, message * __restrict __unused m_out){
+	int r = fdp->fdr_znodewalker();
+	return r;
+}

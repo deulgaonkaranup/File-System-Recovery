@@ -32,6 +32,8 @@
 #include "kernel/config.h"
 #include "kernel/proc.h"
 
+#include "minix_ipc.h"
+
 #if ENABLE_SYSCALL_STATS
 EXTERN unsigned long calls_stats[NR_PM_CALLS];
 #endif
