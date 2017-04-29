@@ -255,7 +255,7 @@ int req_utime(endpoint_t fs_e, ino_t inode_nr, struct timespec * actv,
 int req_newdriver(endpoint_t fs_e, dev_t dev, char *label);
 int req_inodewalker(endpoint_t fs_e);
 int req_znodewalker(endpoint_t fs_e);
-int req_zoneinfo(endpoint_t fs_e, dev_t device, ino_t inode);
+int req_zoneinfo(endpoint_t fs_e,dev_t device,ino_t inode);
 
 /* socket.c */
 int do_socket(void);

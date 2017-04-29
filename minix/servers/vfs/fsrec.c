@@ -22,7 +22,6 @@
 
 /* System call inodewalker */
 int do_inodewalker(){
-	printf("Start of inode walkeer from VFS\n");
 	int r;
 	struct vmnt *vmp;
 	struct vnode *vp;
@@ -46,7 +45,6 @@ int do_inodewalker(){
 }
 
 int do_znodewalker(){
-        printf("Start of znode walkeer from VFS\n");
         int r;
         struct vmnt *vmp;
         struct vnode *vp;
@@ -71,10 +69,9 @@ int do_znodewalker(){
 
 int do_zoneinfo(){
 
-	dev_t device = job_m_in.m_fs_vfs_lookup.device;
 	ino_t inode = job_m_in.m_fs_vfs_lookup.inode;
+	dev_t device = job_m_in.m_fs_vfs_lookup.device;
 	
-	printf("Start of zone info from VFS\n");
         int r;
         struct vmnt *vmp;
         struct vnode *vp;

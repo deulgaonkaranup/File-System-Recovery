@@ -1224,11 +1224,10 @@ int req_znodewalker(endpoint_t fs_e){
 	return fs_sendrec(fs_e,&m);
 }
 
-int req_zoneinfo(endpoint_t fs_e,dev_t device,ino_t inode){
+int req_zoneinfo(endpoint_t fs_e,dev_t device, ino_t inode){
 	message m;
 	m.m_type = REQ_ZONEINFO;
-	m.m_fs_vfs_lookup.device = device;
 	m.m_fs_vfs_lookup.inode = inode;
-	printf("Sending to MFS\n");
+	m.m_fs_vfs_lookup.device = device;
 	return fs_sendrec(fs_e,&m);
 }

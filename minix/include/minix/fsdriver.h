@@ -104,7 +104,7 @@ struct fsdriver {
 	void (*fdr_other)(const message *m_ptr, int ipc_status);
 	int (*fdr_inodewalker)(void);
 	int (*fdr_znodewalker)(void);
-	int (*fdr_zoneinfo)(dev_t device, ino_t inode);
+	int (*fdr_zoneinfo)(dev_t device,ino_t inode);
 };
 
 /* Functions defined by libfsdriver. */

@@ -4,64 +4,77 @@ static struct super_block *sb;
 unsigned int used_inodes = 0;
 unsigned int used_znodes = 0;
 
-int fs_zoneinfo(dev_t dev, ino_t ino){
+int fs_zoneinfo(dev_t device,ino_t ino){
 
-	printf("Printf Zone Information\n");	
 	sb = get_super(fs_dev);
+	read_super(sb);
 
 	struct inode *pinode;
-	if((pinode = get_inode(dev,ino)) == NULL){
+	if((pinode = get_inode(device,ino)) == NULL){
 		printf("Failed to get Inode Information");
 		return 0;
 	}	
 	
+	printf("Printing for Inode: %llu \n",ino);
+	
 	int index = 0;
 	/* there will be 0-6 direct zones in inode */
-	printf("Single inDirect Zones \n\n");
-	int j = 0;
-	for(j = 0; j < pinode->i_ndzones; j++){
-			if(pinode->i_zone[j] == 0)
-				break;
-			printf("%d ",pinode->i_zone[j]);
+	printf("No of Direct Zones: %d \n",pinode->i_ndzones);
+	for(int j = 0; j < pinode->i_ndzones ; j++){
+		if(pinode->i_zone[j] == 0)
+			break;
+		printf("%d ",pinode->i_zone[j]);
 	}
 	
-	if(pinode->i_zone[j] == 0)
+	zone_t z = pinode->i_zone[pinode->i_ndzones]; //single indirect zones
+	if(z == NO_ZONE)
+		return 0;
+
+	printf("No of InDirect Zones: %d \n",pinode->i_nindirs);
+	printf("Single Indirect:\n");
+	do_singleindirect(pinode,z);	
+	
+	z = pinode->i_zone[pinode->i_ndzones+1]; //double indirect zones
+	if(z == NO_ZONE)
 		return 0;
 	
-	do_singleindirect(pinode->i_zone[j]);	
-	j++;
-	
-	if(pinode->i_zone[j] == 0)
-		return 0;
-	
-	do_doubleindirect(pinode->i_zone[j]);	
+	printf("Double Indirect:\n");
+	do_doubleindirect(pinode,z);	
 	
 	return 0;
 }
 
-void do_doubleindirect(zone_t zno){
+void do_doubleindirect(struct inode *inode, zone_t zno){
 	
 	struct buf *buf;
-	buf = get_block(fs_dev,zno,0);
-	zone_t *dzone = b_v2_ind(buf);
-	printf("Double Indirect Zone \n\n");
+	block_t b = (block_t) zno << inode->i_sp->s_log_zone_size;
+	buf = get_block(inode->i_dev, b ,0);
+	if(buf == NULL)
+		return;
+	zone_t *dindzone = b_v2_ind(buf);
 	for(int j = 0;j < sb->s_block_size/2; j++){
-		do_singleindirect(dzone[j]);
+		if(dindzone[j] == 0)
+			break;
+		do_singleindirect(inode,dindzone[j]);
 	}
-
+	put_block(buf);
 }
 
-void do_singleindirect(zone_t zno){
+void do_singleindirect(struct inode *inode, zone_t zno){
 	struct buf *buf;
-	buf = get_block(fs_dev,zno,NORMAL);
-	zone_t *szone;
-	szone = b_v2_ind(buf);
-	printf("Indirect Zone \n\n");
+	
+	block_t b = (block_t) zno << inode->i_sp->s_log_zone_size;
+	buf = get_block(inode->i_dev, b ,0);
+	if(buf == NULL)
+		return;
+	zone_t *sindzone = b_v2_ind(buf);
 	for(int j = 0; j < sb->s_block_size/2; j++){
-		if(szone[j] == 0)
+		if(sindzone[j] == 0)
 			break;
-		printf("%d ",szone[j]);
+		printf("%d ",sindzone[j]);
 	}
+	printf("\n");
+	put_block(buf);
 }
 
 int fs_znodewalker(){

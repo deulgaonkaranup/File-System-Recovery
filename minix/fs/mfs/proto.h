@@ -112,7 +112,7 @@ void get_bitmap(bitchunk_t *bitmap,int type);
 void get_list_used(bitchunk_t *bitmap,int type);
 void print_superblock();
 char *int2binstr(unsigned int i);
-void do_doubleindirect(zone_t zno);
-void do_singleindirect(zone_t zno);
+void do_doubleindirect(struct inode *inode,zone_t zno);
+void do_singleindirect(struct inode *inode,zone_t zno);
 #endif
 
