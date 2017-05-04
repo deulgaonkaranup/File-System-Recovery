@@ -100,6 +100,45 @@ int fs_znodewalker(){
 	return 0;
 }
 
+void fs_check_imap(){
+	
+	int type = IMAP;
+	
+	/* get Super Block in memory */
+	sb = get_super(fs_dev);
+	read_super(sb);
+	
+	block_t bno = 2;
+	int nblk = sb->s_imap_blocks;
+	struct buf *bp;
+	int used = 0;
+	struct inode *pinode;
+	
+	for (int i = 0; i < nblk; i++, bno++, p += FS_BITMAP_CHUNKS(sb->s_block_size)){
+		bp = get_block(fs_dev, bno, 0);
+		for (int j = 0; j < FS_BITMAP_CHUNKS(sb->s_block_size); ++j){
+			if(b_bitmap(bp)[j] == '1'){
+				int ino = i * FS_BITCHUNK_BITS + j;
+				used++;
+				if((pinode = get_inode(fs_dev,ino)) == NULL){
+					printf("Inode %d is set in imap but is missing\n",ino);
+					b_bitmap(bp)[j] == 0;
+				}
+			}else{
+				if((pinode = get_inode(fs_dev,ino)) != NULL){
+					printf("Inode %d is not set in imap but is present\n",ino);
+					b_bitmap(bp)[j] == 1;
+				}
+			}
+		}
+	}
+	printf("No of used inodes are : %d\n",used);
+	
+	//put_block(bp);
+	
+	free();	
+}
+
 int fs_inodewalker(){
 	
 	
